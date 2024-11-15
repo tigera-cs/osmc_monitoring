@@ -43,7 +43,7 @@ For more information about Typha and Felix, please visit these docs: [Typha](htt
 
 ### Demo
 
-**1.** Get a test cluster and deploy Calico Open Source using Helm, following this [giude](https://docs.tigera.io/calico/latest/getting-started/kubernetes/helm). It is important to use Helm because we will use it later to change Typha resource limits.
+**1.** Get a test cluster and deploy Calico Open Source using Helm, following this [guide](https://docs.tigera.io/calico/latest/getting-started/kubernetes/helm). It is important to use Helm because we will use it later to change Typha resource limits.
 
 **2.** Follow [this tutorial](https://docs.tigera.io/calico/3.28/operations/monitor/monitor-component-metrics) to go through the necessary steps to implement basic monitoring of Calico with Prometheus.
 
