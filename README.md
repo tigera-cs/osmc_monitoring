@@ -1,6 +1,7 @@
+
 # Monitoring Calico Components - DEMO
 
-### Content of this repo
+### Table of Contents
 
 * [Thank You!](#thank-you)
 * [Overview](#overview)
@@ -9,17 +10,19 @@
 
 ### Thank you!
 
-Thank you for attending the OSMC in Nuremberg and the presentation on "Monitoring Calico Components" by Tigera.
+Thank you for attending the OSMC in Nuremberg and joining the presentation on **"Monitoring Calico Components"** by Tigera.
 
-We hope you enjoyed the presentation and please feel free to download the slides from [here](etc/OSMC_Nuremberg_2024_Davide_Sellitri_Monitoring_Calico_Components.pdf).
+We hope you enjoyed the presentation! Feel free to download the slides from [here](etc/OSMC_Nuremberg_2024_Davide_Sellitri_Monitoring_Calico_Components.pdf).
 
-We also encourage you to leave a feedback [here](https://forms.gle/GX8byFYZmACcYKHM6), about the presentation or Project Calico. You feedback is valuable!
+We would also appreciate your feedback about the presentation or Project Calico. Please leave your feedback [here](https://forms.gle/GX8byFYZmACcYKHM6). Your input is valuable to us!
 
 ---
 
 ### Overview
 
-In this demo we will deploy Calico Open Source using Helm and monitor Calico core components: Typha and Felix. We will deploy Prometheus, Grafana and Grafana dashboards to see values of the top metrics and understand the baselines. Afterwards, we will upgrade Calico specifying very low limits for Typha, and run a script which will stress Calico components. Finally we will look at how values change in the Grafana dashboard.
+In this demo, we will deploy Calico Open Source using Helm and monitor core Calico components: Typha and Felix. We’ll deploy Prometheus, Grafana, and Grafana dashboards to observe key metrics and establish baselines.
+
+Next, we’ll upgrade Calico with intentionally low limits for Typha and run a script to stress Calico components. Finally, we’ll examine how the metrics change in the Grafana dashboard.
 
 ---
 
@@ -27,36 +30,35 @@ In this demo we will deploy Calico Open Source using Helm and monitor Calico cor
 
 **IMPORTANT**
 
-- This demo is **disruptive** and it is not meant to run in a any production cluster.
-- **DO NOT** use the Typha limits shown in this demo in any cluster apart from this demo.
-- The Grafana dashboards provided in this demo are not maintained by Tigera but serve for the purpose of this demo. Please feel free to adapt these dashboards or use the metrics at your convenience.
+* This demo is **disruptive** and should not be run in any production cluster.
+* **DO NOT** use the Typha limits shown in this demo in any cluster other than for this demo.
+* The Grafana dashboards provided are not maintained by Tigera. They are for demonstration purposes only. Feel free to adapt them or use the metrics as needed.
 
-**About Calico Felix, Typha, and kube-controllers components**
+**About Calico Felix and Typha**
 
-**Felix** is a daemon that runs on every machine that implements network policy. Felix is the brains of Calico. Typha is an optional set of pods that extends Felix to scale traffic between Calico nodes and the datastore. The kube-controllers pod runs a set of controllers which are responsible for a variety of control plane functions, such as resource garbage collection and synchronization with the Kubernetes API.
+* **Felix** is the primary Calico agent that runs on every node, enforcing network policy and managing routes.
+* **Typha** is an optional component that enhances scalability by reducing datastore traffic between Calico nodes.
 
-You can configure Felix, Typha, and/or kube-controllers to provide metrics to Prometheus.
-
-For more information about Typha and Felix, please visit these docs: [Typha](https://docs.tigera.io/calico/latest/reference/typha/) - [Felix](https://docs.tigera.io/calico/latest/reference/felix/).
+Both Felix and Typha can provide metrics for Prometheus. For more details, see the official documentation: [Typha](https://docs.tigera.io/calico/latest/reference/typha/) | [Felix](https://docs.tigera.io/calico/latest/reference/felix/).
 
 ---
 
 ### Demo
 
-**1.** Get a test cluster and deploy Calico Open Source using Helm, following this [guide](https://docs.tigera.io/calico/latest/getting-started/kubernetes/helm). It is important to use Helm because we will use it later to change Typha resource limits.
+**1.** Set up a test cluster and deploy Calico Open Source using Helm, following this [guide](https://docs.tigera.io/calico/latest/getting-started/kubernetes/helm). Using Helm is essential, as we will later modify Typha resource limits via Helm values.
 
-**2.** Follow [this tutorial](https://docs.tigera.io/calico/3.28/operations/monitor/monitor-component-metrics) to go through the necessary steps to implement basic monitoring of Calico with Prometheus.
+**2.** Implement basic monitoring of Calico with Prometheus by following [this tutorial](https://docs.tigera.io/calico/3.28/operations/monitor/monitor-component-metrics):
 
-* Configure Calico to enable the metrics reporting.
-* Create the namespace and service account that Prometheus will need.
+* Enable Calico metrics reporting.
+* Create the necessary namespace and service account for Prometheus.
 * Deploy and configure Prometheus.
-* View the metrics in the Prometheus dashboard and create a simple graph.
+* View metrics in the Prometheus dashboard and create a simple graph.
 
-**3.** Follow [this tutorial ](https://docs.tigera.io/calico/latest/operations/monitor/monitor-component-visual)to go through the necessary steps to create Calico metrics dashboards with Grafana.
+**3.** Set up Calico metrics dashboards in Grafana by following [this tutorial](https://docs.tigera.io/calico/latest/operations/monitor/monitor-component-visual).
 
-**4.** Import the additional `Demo_Grafana_Dashboard.json` in this repro, by following [these](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/) instructions.
+**4.** Import the additional `Demo_Grafana_Dashboard.json` file from this repo, by following [these](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/) instructions.
 
-**5.** Go to the `OSMC - Monitoring Calico Components` dashboard and set the timeframe to 15 minutes and the Auto refresh to 5 seconds, as shown here:
+**5.** Open the `OSMC - Monitoring Calico Components` dashboard in Grafana. Set the timeframe to 15 minutes and the Auto refresh to 5 seconds, as shown below:
 
 ![dashboard_1](etc/dashboard_1.png)
 
@@ -80,15 +82,15 @@ installation:
                   memory: 40Mi
 ```
 
-You can use this command to upgrade Calico Open Source:
+Upgrade Calico with this command:
 
 ```
 helm upgrade calico projectcalico/tigera-operator --values values_osmc.yaml -n tigera-operator
 ```
 
-**(Optional)** Adjust these limits if the installation fails because of them.
+**(Optional)** Adjust these limits if the upgrade fails.
 
-**8**. Wait 5 to 10 minutes and take note of baselines of the metrics in the dashboard.
+**8**. Wait 5–10 minutes and observe the new baseline metrics in the dashboard.
 
 **9.** Deploy a `test-deployment` which we'll use to stress Calico components:
 
@@ -126,18 +128,19 @@ spec:
 
 ```
 
-**NOTE**: Make sure that `calico-typha` and the `test-deploy` pods are not scheduled on the same nodes.
+**NOTE**: Esure that `calico-typha` and `test-deploy` pods are not scheduled on the same nodes.
 
-**10.** Wait 5 to 10 minutes to see the new baselines and take note of them.
+**10.** Wait 5–10 minutes, observe the new baseline metrics, and note any changes.
 
-**11.** Stress Calico Typha by scaling up and down the `test-deploy` deployment, with this script:
+**11.** Stress Calico Typha by scaling up and down the `test-deploy` deployment, using this script:
 
 ```
 while true; do kubectl scale deployment test-deploy --replicas=10; sleep 2; kubectl scale deployment test-deploy --replicas=1;sleep 5; done
 ```
 
-**12.** Watch the dashboard and notice how values change drastically. After a while you should also see that the number of Calico Active nodes is lower than the number of nodes in your cluster.
+**12.** Monitor the Grafana dashboard. Note significant metric changes and watch for a drop in the number of active Calico nodes.
 
 **13.** Stop the script and cleanup the cluster.
 
-> **Congratulations! You have completed 'Monitoring Calico Components' demo! Please leave a feedback [here](https://forms.gle/GX8byFYZmACcYKHM6)**
+> **Congratulations! You have completed 'Monitoring Calico Components' demo! Don’t forget to leave your feedback [here](https://forms.gle/GX8byFYZmACcYKHM6).**
+>
