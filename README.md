@@ -19,7 +19,7 @@ We also encourage you to leave a feedback [here](https://forms.gle/GX8byFYZmACcY
 
 ### Overview
 
-In this demo we will deploy Calico Open Source using Helm and monitor Calico core components: Typha and Felix. We will deploy Prometheus, Grafana and Grafana dashboards to see values of the top metrics and understand the baselines. Afterwards, we will upgrade Calico specifying very low limits for Typha, and run a script which will stress Calico components. Finally we look at how values change in the Grafana dashboard.
+In this demo we will deploy Calico Open Source using Helm and monitor Calico core components: Typha and Felix. We will deploy Prometheus, Grafana and Grafana dashboards to see values of the top metrics and understand the baselines. Afterwards, we will upgrade Calico specifying very low limits for Typha, and run a script which will stress Calico components. Finally we will look at how values change in the Grafana dashboard.
 
 ---
 
