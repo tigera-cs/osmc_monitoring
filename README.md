@@ -1,4 +1,3 @@
-
 # Monitoring Calico Components - DEMO
 
 ### Table of Contents
@@ -56,15 +55,15 @@ Both Felix and Typha can provide metrics for Prometheus. For more details, see t
 
 **3.** Set up Calico metrics dashboards in Grafana by following [this tutorial](https://docs.tigera.io/calico/latest/operations/monitor/monitor-component-visual).
 
-**4.** Import the additional `Demo_Grafana_Dashboard.json` file from this repo, by following [these](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/) instructions.
+**4.** Import the additional Grafana dashboards using the `.json` files from this repo, by following [these](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/) instructions.
 
-**5.** Open the `OSMC - Monitoring Calico Components` dashboard in Grafana. Set the timeframe to 15 minutes and the Auto refresh to 5 seconds, as shown below:
+**5.** Open the `OSMC - Monitoring Calico Components - Live` dashboard in Grafana. Set the timeframe to 15 minutes and the Auto refresh to 5 seconds, as shown below:
 
 ![dashboard_1](etc/dashboard_1.png)
 
 **6.** Wait 5 to 10 minutes and take note of baselines of the metrics in the dashboard.
 
-**7.** Upgrade Calico Open Source with very low Typha resource limits, using this Helm `values_osmc.yaml` file:
+**7.** Upgrade Calico Open Source with very low Typha & Felix resource limits, using this Helm `values_osmc.yaml` file:
 
 ```
 installation:
@@ -79,7 +78,15 @@ installation:
               resources:
                 limits:
                   cpu: 1m
-                  memory: 40Mi
+    calicoNodeDaemonSet:
+          spec:
+            template:
+              spec:
+                containers:
+                - name: calico-node
+                  resources:
+                    limits:
+                      cpu: 200m
 ```
 
 Upgrade Calico with this command:
@@ -90,7 +97,7 @@ helm upgrade calico projectcalico/tigera-operator --values values_osmc.yaml -n t
 
 **(Optional)** Adjust these limits if the upgrade fails.
 
-**8**. Wait 5–10 minutes and observe the new baseline metrics in the dashboard.
+**8**. Wait 5–10 minutes and observe the new baseline metrics in the dashboard. *See also how the upgrade affects metrics related with Typha breadcrumbs.*
 
 **9.** Deploy a `test-deployment` which we'll use to stress Calico components:
 
@@ -143,4 +150,3 @@ while true; do kubectl scale deployment test-deploy --replicas=10; sleep 2; kube
 **13.** Stop the script and cleanup the cluster.
 
 > **Congratulations! You have completed 'Monitoring Calico Components' demo! Don’t forget to leave your feedback [here](https://forms.gle/GX8byFYZmACcYKHM6).**
->
